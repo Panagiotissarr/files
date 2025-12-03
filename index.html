@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Index</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: "Inter", sans-serif;
+        background: radial-gradient(circle at center, #1a1a1a, #0c0c0c 70%);
+        background-size: cover;
+        min-height: 100vh;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .panel {
+        width: 80%;
+        max-width: 900px;
+        background: rgba(20, 20, 20, 0.85);
+        backdrop-filter: blur(10px);
+        padding: 25px 30px;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.1);
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.4);
+    }
+
+    .header {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .header img {
+        width: 48px;
+        height: 48px;
+    }
+
+    .header h1 {
+        margin: 10px 0 5px;
+        font-weight: 600;
+        font-size: 22px;
+    }
+
+    .header p {
+        font-size: 14px;
+        opacity: 0.85;
+    }
+
+    .search {
+        margin: 20px 0;
+        text-align: right;
+    }
+
+    .search input {
+        width: 260px;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #333;
+        background: #111;
+        color: white;
+        outline: none;
+    }
+
+    .path {
+        margin-top: 10px;
+        color: white;
+        opacity: 0.8;
+        font-size: 14px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        color: white;
+        font-size: 14px;
+    }
+
+    table th {
+        text-align: left;
+        padding: 12px;
+        background: rgba(255,255,255,0.06);
+        border-bottom: 1px solid rgba(255,255,255,0.15);
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    table td {
+        padding: 12px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        color: #d6d6d6;
+    }
+
+    tr:hover {
+        background: rgba(255,255,255,0.04);
+    }
+
+    .icon {
+        margin-right: 8px;
+        vertical-align: middle;
+    }
+
+    .folder {
+        color: #ffdd73;
+        font-weight: 500;
+    }
+
+    .file {
+        color: #9ec8ff;
+    }
+</style>
+</head>
+
+<body>
+
+<div class="panel">
+
+<div class="header">
+    <h1>Files</h1>
+
+    <p>
+        Welcome! This is a file repo made by Panagiotis.
+        <a href="https://panagiotissarr.github.io" 
+           style="color:#4da6ff; text-decoration:underline; font-weight:500;">
+           Click Here
+        </a>
+        to return to the main homepage.
+    </p>
+
+    <p style="font-size:12px; opacity:0.7;">
+        This repo of files contains diffrent items that panagiotis wants to share.
+    </p>
+</div>
+
+<div class="path">/</div>
+
+    <div class="search">
+        <input type="text" id="search" placeholder="Type to search…">
+    </div>
+
+    <table id="fileTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable(0)">Name ↓</th>
+                <th onclick="sortTable(1)">Size</th>
+                <th onclick="sortTable(2)">Date ↓</th>
+            </tr>
+        </thead>
+        <tbody id="fileBody">
+
+<tbody id="fileBody">
+
+    <tr>
+        <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #1</a></td>
+        <td>(:EB</td>
+        <td>Wensday 12, 2025</td>
+    </tr>
+
+    <tr>
+        <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #2</a></td>
+        <td>1TB</td>
+        <td>Wensday 12, 2025</td>
+    </tr>
+
+    <tr>
+        <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #3</a></td>
+        <td>-</td>
+        <td>Wensday 12, 2025</td>
+    </tr>
+
+    <tr>
+        <td><span class="icon">📄</span> <a href="https://example.com/files/placeholder.md" class="name-link file">README.md</a></td>
+        <td>DOF MIB</td>
+        <td>Wensday 12, 2025</td>
+    </tr>
+
+</tbody>
+
+
+</div>
+
+<script>
+function sortTable(colIndex) {
+    let table = document.getElementById("fileTable");
+    let rows = Array.from(table.rows).slice(1);
+    let ascending = table.getAttribute("data-sort") !== "asc";
+
+    rows.sort((a, b) => {
+        let A = a.cells[colIndex].innerText.trim().toLowerCase();
+        let B = b.cells[colIndex].innerText.trim().toLowerCase();
+        return ascending ? A.localeCompare(B) : B.localeCompare(A);
+    });
+
+    table.setAttribute("data-sort", ascending ? "asc" : "desc");
+
+    let body = document.getElementById("fileBody");
+    rows.forEach(r => body.appendChild(r));
+}
+
+document.getElementById("search").addEventListener("input", function() {
+    let term = this.value.toLowerCase();
+    let rows = document.querySelectorAll("#fileBody tr");
+
+    rows.forEach(r => {
+        let text = r.innerText.toLowerCase();
+        r.style.display = text.includes(term) ? "" : "none";
+    });
+});
+</script>
+
+</body>
+</html>
