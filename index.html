@@ -49,13 +49,15 @@ title: File Index
               <th onclick="sortTable(2)">Date ↓</th>
           </tr>
       </thead>
+
       <tbody id="fileBody">
         {% assign folder = page.url %}
         {% if site.data.file_index[folder] %}
-          {% for item in site.data.file_index[folder] %}
+          {% assign sorted_items = site.data.file_index[folder] | sort: 'name' %}
+          {% for item in sorted_items %}
             <tr>
               <td>
-                <span class="icon">{% if item.path contains '.' %}📄{% else %}📁{% endif %}</span>
+                <span class="icon">{% if item.type == "folder" %}📁{% else %}📄{% endif %}</span>
                 <a href="{{ item.path }}" class="name-link">{{ item.name }}</a>
               </td>
               <td>{{ item.size }}</td>
@@ -65,7 +67,7 @@ title: File Index
         {% else %}
           <tr>
             <td colspan="3" style="text-align:center; opacity:0.6;">
-              No files found in this folder.
+              No files or folders found in this folder.
             </td>
           </tr>
         {% endif %}
