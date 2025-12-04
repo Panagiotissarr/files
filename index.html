@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>File Index</title>
 <link rel="stylesheet" href="css/main.css">
+<style>
+  #backBtn {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    background: #4da6ff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+  }
+</style>
 </head>
 <body>
 <div class="panel">
@@ -35,13 +47,20 @@
 </div>
 
 <script>
-// Define your files structure
+// Define your files structure with optional 'link'
 const fileTree = {
   "/files/": [
     {name:"images", path:"images/", type:"folder", size:"-", date:"2025-12-04"}
   ],
   "/files/images/": [
-    {name:"logo-mini.png", path:"images/logo-mini.png", type:"file", size:"2 KB", date:"2025-12-04"}
+    {
+      name:"logo-mini.png", 
+      path:"images/logo-mini.png", 
+      type:"file", 
+      size:"2 KB", 
+      date:"2025-12-04",
+      link:"https://example.com" // clicking opens this URL
+    }
   ]
 };
 
@@ -67,14 +86,24 @@ function loadFiles(path){
       <td>${item.size}</td>
       <td>${item.date}</td>
     `;
-    // Click folder to navigate inside
-    if(item.type==="folder"){
-      tr.querySelector("a").addEventListener("click", e => {
+
+    const linkEl = tr.querySelector("a");
+
+    if(item.type === "folder"){
+      // Folder click: navigate inside table
+      linkEl.addEventListener("click", e => {
         e.preventDefault();
         currentPath = path + item.name + "/";
         loadFiles(currentPath);
       });
+    } else {
+      // File click: open 'link' if exists, else file path
+      linkEl.addEventListener("click", e => {
+        e.preventDefault();
+        window.open(item.link || item.path, "_blank");
+      });
     }
+
     tbody.appendChild(tr);
   });
 }
