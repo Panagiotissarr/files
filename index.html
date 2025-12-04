@@ -1,3 +1,8 @@
+---
+layout: default
+title: File Index
+---
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +13,7 @@
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="css/main.css">
+<link rel="stylesheet" href="css/main.css">
 
 </head>
 
@@ -16,85 +21,112 @@
 
 <div class="panel">
 
-<div class="header">
-    <h1>Files</h1>
+  <div class="header">
+      <h1>Files</h1>
 
-    <p>
-        Welcome! This is a file repo made by Panagiotis.
-        <a href="https://panagiotissarr.github.io" 
-           style="color:#4da6ff; text-decoration:underline; font-weight:500;">
-           Click Here
-        </a>
-        to return to the main homepage.
-    </p>
+      <p>
+          Welcome! This is a file repo made by Panagiotis.
+          <a href="https://panagiotissarr.github.io" 
+             style="color:#4da6ff; text-decoration:underline; font-weight:500;">
+             Click Here
+          </a>
+          to return to the main homepage.
+      </p>
 
-    <p style="font-size:12px; opacity:0.7;">
-        This repo of files contains diffrent items that panagiotis wants to share.
-    </p>
-</div>
+      <p style="font-size:12px; opacity:0.7;">
+          This repo of files contains different items that Panagiotis wants to share.
+      </p>
+  </div>
 
-<div class="path">/</div>
+  <div class="path">/</div>
 
-    <div class="search">
-        <input type="text" id="search" placeholder="Type to search…">
-    </div>
+  <div class="search">
+      <input type="text" id="search" placeholder="Type to search…">
+  </div>
 
-    <table id="fileTable">
-        <thead>
+  <table id="fileTable">
+      <thead>
+          <tr>
+              <th onclick="sortTable(0)">Name ↓</th>
+              <th onclick="sortTable(1)">Size</th>
+              <th onclick="sortTable(2)">Date ↓</th>
+          </tr>
+      </thead>
+
+      <tbody id="fileBody">
+        {%- comment -%}
+        If Jekyll is available (we run jekyll build in Actions), this block will list files under /files/.
+        Otherwise the fallback HTML rows are used so the page keeps working exactly as before.
+        {%- endcomment -%}
+
+        {% assign dir_path = "/files/" %}
+        {% assign files_in_dir = site.static_files | where_exp: "f", "f.path contains dir_path" %}
+
+        {% if files_in_dir and files_in_dir.size > 0 %}
+          {% for f in files_in_dir %}
             <tr>
-                <th onclick="sortTable(0)">Name ↓</th>
-                <th onclick="sortTable(1)">Size</th>
-                <th onclick="sortTable(2)">Date ↓</th>
+              <td>
+                <span class="icon">📄</span>
+                <a href="{{ f.path }}" class="name-link file">{{ f.name }}</a>
+              </td>
+              <td>-</td>
+              <td>-</td>
             </tr>
-        </thead>
-        <tbody id="fileBody">
+          {% endfor %}
+        {% else %}
+          <!-- fallback static placeholders (kept so nothing breaks if Jekyll isn't running) -->
+          <tr>
+              <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #1</a></td>
+              <td>—</td>
+              <td>Wednesday 12, 2025</td>
+          </tr>
 
-<tbody id="fileBody">
+          <tr>
+              <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #2</a></td>
+              <td>1TB</td>
+              <td>Wednesday 12, 2025</td>
+          </tr>
 
-    <tr>
-        <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #1</a></td>
-        <td>(:EB</td>
-        <td>Wensday 12, 2025</td>
-    </tr>
+          <tr>
+              <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #3</a></td>
+              <td>-</td>
+              <td>Wednesday 12, 2025</td>
+          </tr>
 
-    <tr>
-        <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #2</a></td>
-        <td>1TB</td>
-        <td>Wensday 12, 2025</td>
-    </tr>
-
-    <tr>
-        <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #3</a></td>
-        <td>-</td>
-        <td>Wensday 12, 2025</td>
-    </tr>
-
-    <tr>
-        <td><span class="icon">📄</span> <a href="https://example.com/files/placeholder.md" class="name-link file">README.md</a></td>
-        <td>DOF MIB</td>
-        <td>Wensday 12, 2025</td>
-    </tr>
-
-</tbody>
-
+          <tr>
+              <td><span class="icon">📄</span> <a href="https://example.com/files/placeholder.md" class="name-link file">README.md</a></td>
+              <td>—</td>
+              <td>Wednesday 12, 2025</td>
+          </tr>
+        {% endif %}
+      </tbody>
+  </table>
 
 </div>
 
 <script>
 function sortTable(colIndex) {
     let table = document.getElementById("fileTable");
-    let rows = Array.from(table.rows).slice(1);
-    let ascending = table.getAttribute("data-sort") !== "asc";
+    // only sort tbody rows, not header
+    let body = table.tBodies[0];
+    let rows = Array.from(body.querySelectorAll("tr"));
 
+    // determine ascending/descending (store on table)
+    let ascending = table.getAttribute("data-sort") !== "asc";
     rows.sort((a, b) => {
         let A = a.cells[colIndex].innerText.trim().toLowerCase();
         let B = b.cells[colIndex].innerText.trim().toLowerCase();
+        // try numeric compare if both are numeric
+        let nA = parseFloat(A.replace(/[^0-9.\-]/g, ""));
+        let nB = parseFloat(B.replace(/[^0-9.\-]/g, ""));
+        if (!isNaN(nA) && !isNaN(nB)) {
+          return ascending ? nA - nB : nB - nA;
+        }
         return ascending ? A.localeCompare(B) : B.localeCompare(A);
     });
 
     table.setAttribute("data-sort", ascending ? "asc" : "desc");
 
-    let body = document.getElementById("fileBody");
     rows.forEach(r => body.appendChild(r));
 }
 
