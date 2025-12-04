@@ -5,18 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>File Index</title>
 <link rel="stylesheet" href="css/main.css">
-<style>
-  #backBtn {
-    display: inline-block;
-    margin-bottom: 10px;
-    padding: 5px 10px;
-    background: #4da6ff;
-    color: white;
-    border-radius: 5px;
-    cursor: pointer;
-    text-decoration: none;
-  }
-</style>
 </head>
 <body>
 <div class="panel">
@@ -29,6 +17,7 @@
 
   <div class="path" id="path">/files/</div>
   <a href="#" id="backBtn" style="display:none;">← Back</a>
+
   <div class="search">
       <input type="text" id="search" placeholder="Type to search…">
   </div>
@@ -93,7 +82,6 @@ function loadFiles(path){
 // Back button functionality
 backBtn.addEventListener("click", e => {
   e.preventDefault();
-  // Go up one level
   if(currentPath !== "/files/"){
     currentPath = "/files/";
     loadFiles(currentPath);
