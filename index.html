@@ -38,7 +38,7 @@ title: File Index
       </p>
   </div>
 
-  <div class="path">/</div>
+  <div class="path">{{ page.url }}</div>
 
   <div class="search">
       <input type="text" id="search" placeholder="Type to search…">
@@ -54,45 +54,35 @@ title: File Index
       </thead>
 
       <tbody id="fileBody">
-        {%- comment -%}
-        If Jekyll is available (we run jekyll build in Actions), this block will list files under /files/.
-        Otherwise the fallback HTML rows are used so the page keeps working exactly as before.
-        {%- endcomment -%}
-
-        {% assign dir_path = "/files/" %}
-        {% assign files_in_dir = site.static_files | where_exp: "f", "f.path contains dir_path" %}
-
-        {% if files_in_dir and files_in_dir.size > 0 %}
-          {% for f in files_in_dir %}
+        {% assign folder = page.url %}
+        {% if site.data.file_index[folder] %}
+          {% for item in site.data.file_index[folder] %}
             <tr>
               <td>
-                <span class="icon">📄</span>
-                <a href="{{ f.path }}" class="name-link file">{{ f.name }}</a>
+                <span class="icon">{% if item.path contains '.' %}📄{% else %}📁{% endif %}</span>
+                <a href="{{ item.path }}" class="name-link">{{ item.name }}</a>
               </td>
-              <td>-</td>
-              <td>-</td>
+              <td>{{ item.size }}</td>
+              <td>{{ item.date | date: "%B %d, %Y" }}</td>
             </tr>
           {% endfor %}
         {% else %}
-          <!-- fallback static placeholders (kept so nothing breaks if Jekyll isn't running) -->
+          <!-- fallback static placeholders -->
           <tr>
               <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #1</a></td>
               <td>—</td>
               <td>Wednesday 12, 2025</td>
           </tr>
-
           <tr>
               <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #2</a></td>
               <td>1TB</td>
               <td>Wednesday 12, 2025</td>
           </tr>
-
           <tr>
               <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #3</a></td>
               <td>-</td>
               <td>Wednesday 12, 2025</td>
           </tr>
-
           <tr>
               <td><span class="icon">📄</span> <a href="https://example.com/files/placeholder.md" class="name-link file">README.md</a></td>
               <td>—</td>
@@ -107,16 +97,13 @@ title: File Index
 <script>
 function sortTable(colIndex) {
     let table = document.getElementById("fileTable");
-    // only sort tbody rows, not header
     let body = table.tBodies[0];
     let rows = Array.from(body.querySelectorAll("tr"));
-
-    // determine ascending/descending (store on table)
     let ascending = table.getAttribute("data-sort") !== "asc";
+
     rows.sort((a, b) => {
         let A = a.cells[colIndex].innerText.trim().toLowerCase();
         let B = b.cells[colIndex].innerText.trim().toLowerCase();
-        // try numeric compare if both are numeric
         let nA = parseFloat(A.replace(/[^0-9.\-]/g, ""));
         let nB = parseFloat(B.replace(/[^0-9.\-]/g, ""));
         if (!isNaN(nA) && !isNaN(nB)) {
@@ -126,14 +113,12 @@ function sortTable(colIndex) {
     });
 
     table.setAttribute("data-sort", ascending ? "asc" : "desc");
-
     rows.forEach(r => body.appendChild(r));
 }
 
 document.getElementById("search").addEventListener("input", function() {
     let term = this.value.toLowerCase();
     let rows = document.querySelectorAll("#fileBody tr");
-
     rows.forEach(r => {
         let text = r.innerText.toLowerCase();
         r.style.display = text.includes(term) ? "" : "none";
