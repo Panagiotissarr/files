@@ -104,3 +104,14 @@
     .file {
         color: #9ec8ff;
     }
+
+  #backBtn {
+    display: inline-block;
+    margin-bottom: 10px;
+    padding: 5px 10px;
+    background: #4da6ff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+  }
