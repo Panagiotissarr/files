@@ -12,7 +12,6 @@ title: File Index
 <title>File Index</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="css/main.css">
 
 </head>
@@ -23,7 +22,6 @@ title: File Index
 
   <div class="header">
       <h1>Files</h1>
-
       <p>
           Welcome! This is a file repo made by Panagiotis.
           <a href="https://panagiotissarr.github.io" 
@@ -32,7 +30,6 @@ title: File Index
           </a>
           to return to the main homepage.
       </p>
-
       <p style="font-size:12px; opacity:0.7;">
           This repo of files contains different items that Panagiotis wants to share.
       </p>
@@ -52,7 +49,6 @@ title: File Index
               <th onclick="sortTable(2)">Date ↓</th>
           </tr>
       </thead>
-
       <tbody id="fileBody">
         {% assign folder = page.url %}
         {% if site.data.file_index[folder] %}
@@ -67,26 +63,10 @@ title: File Index
             </tr>
           {% endfor %}
         {% else %}
-          <!-- fallback static placeholders -->
           <tr>
-              <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #1</a></td>
-              <td>—</td>
-              <td>Wednesday 12, 2025</td>
-          </tr>
-          <tr>
-              <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #2</a></td>
-              <td>1TB</td>
-              <td>Wednesday 12, 2025</td>
-          </tr>
-          <tr>
-              <td><span class="icon">📁</span> <a href="https://example.com/files/placeholder" class="name-link folder">Placeholder Folder #3</a></td>
-              <td>-</td>
-              <td>Wednesday 12, 2025</td>
-          </tr>
-          <tr>
-              <td><span class="icon">📄</span> <a href="https://example.com/files/placeholder.md" class="name-link file">README.md</a></td>
-              <td>—</td>
-              <td>Wednesday 12, 2025</td>
+            <td colspan="3" style="text-align:center; opacity:0.6;">
+              No files found in this folder.
+            </td>
           </tr>
         {% endif %}
       </tbody>
