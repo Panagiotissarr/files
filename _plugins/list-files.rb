@@ -1,34 +1,36 @@
-require 'find'
+# _plugins/list-files.rb
+# Generates site.data.file_index for all folders under /files
 
-module FileIndexGenerator
-  class Generator < Jekyll::Generator
+require 'fileutils'
+require 'pathname'
+
+module Jekyll
+  class FileIndexer < Generator
     safe true
     priority :low
 
     def generate(site)
-      site.data['file_index'] = {}
+      base_dir = File.join(site.source, "files")
+      index = {}
 
-      base = site.source
+      if Dir.exist?(base_dir)
+        Dir.glob("#{base_dir}/**/*", File::FNM_DOTMATCH).each do |path|
+          next if File.directory?(path) # skip folders themselves
 
-      Find.find(base) do |path|
-        next if path.include?("/_") # ignore _plugins, _site, etc.
-        next if File.directory?(path)
+          rel_path = Pathname.new(path).relative_path_from(Pathname.new(site.source)).to_s
+          folder = "/" + Pathname.new(path).dirname.relative_path_from(Pathname.new(site.source)).to_s + "/"
 
-        rel = path.sub(base + "/", "")
-
-        folder = File.dirname(rel) + "/"
-        name   = File.basename(rel)
-        size   = File.size(path)
-        date   = File.mtime(path)
-
-        site.data['file_index'][folder] ||= []
-        site.data['file_index'][folder] << {
-          "name" => name,
-          "path" => rel,
-          "size" => size,
-          "date" => date
-        }
+          index[folder] ||= []
+          index[folder] << {
+            "name" => File.basename(path),
+            "path" => "/" + rel_path,
+            "size" => "#{File.size(path)} B",
+            "date" => File.mtime(path)
+          }
+        end
       end
+
+      site.data["file_index"] = index
     end
   end
 end
