@@ -3,21 +3,6 @@ layout: default
 title: File Index
 ---
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>File Index</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/main.css">
-
-</head>
-
-<body>
-
 <div class="panel">
 
   <div class="header">
@@ -35,7 +20,20 @@ title: File Index
       </p>
   </div>
 
-  <div class="path">{{ page.url }}</div>
+  <!-- Show current path -->
+  <div class="path">
+    {% assign parts = page.url | split:'/' | reject: '' %}
+    {% if parts.size > 0 %}
+      <a href="/">/</a>
+      {% assign cumulative = "" %}
+      {% for p in parts %}
+        {% assign cumulative = cumulative | append: p | append: "/" %}
+        <a href="{{ cumulative }}">{{ p }}</a> /
+      {% endfor %}
+    {% else %}
+      /
+    {% endif %}
+  </div>
 
   <div class="search">
       <input type="text" id="search" placeholder="Type to search…">
@@ -107,6 +105,3 @@ document.getElementById("search").addEventListener("input", function() {
     });
 });
 </script>
-
-</body>
-</html>
