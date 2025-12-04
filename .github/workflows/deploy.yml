@@ -22,26 +22,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      # Setup Ruby (needed for Jekyll)
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: '3.2'
-          bundler-cache: true
-
-      # Install Jekyll + dependencies if a Gemfile exists
-      - name: Install Dependencies
+      # Install Jekyll (system-wide)
+      - name: Install Jekyll
         run: |
-          if [ -f "Gemfile" ]; then
-            bundle install
-          else
-            gem install jekyll bundler
-          fi
+          sudo gem install jekyll bundler
 
-      # Build the Jekyll site (your HTML is kept)
+      # Build the site (no Gemfile needed)
       - name: Build Jekyll Site
         run: |
-          bundle exec jekyll build -d _site
+          jekyll build --destination _site
 
       # Upload the built site
       - name: Upload artifact
