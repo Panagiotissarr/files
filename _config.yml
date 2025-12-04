@@ -1,2 +1,4 @@
 # _config.yml
+title: Files
+theme: jekyll-theme-cayman
 markdown: kramdown
