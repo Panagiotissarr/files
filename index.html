@@ -33,44 +33,43 @@
 </div>
 
 <script>
-// List all files and folders inside /files/ here
-const files = [
-  {name: "images", path: "files/images/", type: "folder", size: "-", date: "2025-12-04"},
-  {name: "example.txt", path: "files/example.txt", type: "file", size: "1 KB", date: "2025-12-04"}
-];
+// Fetch files.json and populate table
+fetch('files/files.json')
+  .then(res => res.json())
+  .then(files => {
+    const tbody = document.getElementById('fileBody');
+    files.forEach(item => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><span class="icon">${item.type==="folder"?"📁":"📄"}</span>
+            <a href="${item.path}" class="name-link">${item.name}</a></td>
+        <td>${item.size}</td>
+        <td>${item.date}</td>
+      `;
+      tbody.appendChild(tr);
+    });
 
-const tbody = document.getElementById("fileBody");
-files.forEach(item => {
-  const tr = document.createElement("tr");
-  tr.innerHTML = `
-    <td><span class="icon">${item.type==="folder"?"📁":"📄"}</span> 
-        <a href="${item.path}" class="name-link">${item.name}</a></td>
-    <td>${item.size}</td>
-    <td>${item.date}</td>
-  `;
-  tbody.appendChild(tr);
-});
+    // Add search functionality
+    document.getElementById("search").addEventListener("input", function(){
+      const term = this.value.toLowerCase();
+      Array.from(tbody.querySelectorAll("tr")).forEach(r => {
+        r.style.display = r.innerText.toLowerCase().includes(term) ? "" : "none";
+      });
+    });
 
-// Search
-document.getElementById("search").addEventListener("input", function(){
-  const term = this.value.toLowerCase();
-  Array.from(tbody.querySelectorAll("tr")).forEach(r => {
-    r.style.display = r.innerText.toLowerCase().includes(term) ? "" : "none";
+    // Sorting
+    window.sortTable = function(colIndex){
+      const rows = Array.from(tbody.querySelectorAll("tr"));
+      const ascending = tbody.getAttribute("data-sort") !== "asc";
+      rows.sort((a,b)=>{
+        let A=a.cells[colIndex].innerText.toLowerCase();
+        let B=b.cells[colIndex].innerText.toLowerCase();
+        return ascending?A.localeCompare(B):B.localeCompare(A);
+      });
+      tbody.setAttribute("data-sort", ascending?"asc":"desc");
+      rows.forEach(r=>tbody.appendChild(r));
+    }
   });
-});
-
-// Sorting
-function sortTable(colIndex){
-  const rows = Array.from(tbody.querySelectorAll("tr"));
-  const ascending = tbody.getAttribute("data-sort") !== "asc";
-  rows.sort((a,b)=>{
-    let A=a.cells[colIndex].innerText.toLowerCase();
-    let B=b.cells[colIndex].innerText.toLowerCase();
-    return ascending?A.localeCompare(B):B.localeCompare(A);
-  });
-  tbody.setAttribute("data-sort", ascending?"asc":"desc");
-  rows.forEach(r=>tbody.appendChild(r));
-}
 </script>
 </body>
 </html>
