@@ -1,108 +1,76 @@
----
-layout: default
-title: File Index
----
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>File Index</title>
+<link rel="stylesheet" href="css/main.css">
+</head>
+<body>
 <div class="panel">
-
   <div class="header">
       <h1>Files</h1>
-      <p>
-          Welcome! This is a file repo made by Panagiotis.
-          <a href="https://panagiotissarr.github.io" 
-             style="color:#4da6ff; text-decoration:underline; font-weight:500;">
-             Click Here
-          </a>
-          to return to the main homepage.
-      </p>
-      <p style="font-size:12px; opacity:0.7;">
-          This repo of files contains different items that Panagiotis wants to share.
+      <p>Welcome! This is a file repo made by Panagiotis.
+         <a href="https://panagiotissarr.github.io" style="color:#4da6ff;">Click Here</a> to return to the main homepage.
       </p>
   </div>
-<link rel="stylesheet" href="css/main.css">
 
-  <!-- Show current path -->
-  <div class="path">
-    {% assign parts = page.url | split:'/' | reject: '' %}
-    {% if parts.size > 0 %}
-      <a href="/">/</a>
-      {% assign cumulative = "" %}
-      {% for p in parts %}
-        {% assign cumulative = cumulative | append: p | append: "/" %}
-        <a href="{{ cumulative }}">{{ p }}</a> /
-      {% endfor %}
-    {% else %}
-      /
-    {% endif %}
-  </div>
-
+  <div class="path">/files/</div>
   <div class="search">
       <input type="text" id="search" placeholder="Type to search…">
   </div>
 
   <table id="fileTable">
-      <thead>
-          <tr>
-              <th onclick="sortTable(0)">Name ↓</th>
-              <th onclick="sortTable(1)">Size</th>
-              <th onclick="sortTable(2)">Date ↓</th>
-          </tr>
-      </thead>
-
-      <tbody id="fileBody">
-        {% assign folder = page.url %}
-        {% if site.data.file_index[folder] %}
-          {% assign sorted_items = site.data.file_index[folder] | sort: 'name' %}
-          {% for item in sorted_items %}
-            <tr>
-              <td>
-                <span class="icon">{% if item.type == "folder" %}📁{% else %}📄{% endif %}</span>
-                <a href="{{ item.path }}" class="name-link">{{ item.name }}</a>
-              </td>
-              <td>{{ item.size }}</td>
-              <td>{{ item.date | date: "%B %d, %Y" }}</td>
-            </tr>
-          {% endfor %}
-        {% else %}
-          <tr>
-            <td colspan="3" style="text-align:center; opacity:0.6;">
-              No files or folders found in this folder.
-            </td>
-          </tr>
-        {% endif %}
-      </tbody>
+    <thead>
+      <tr>
+        <th onclick="sortTable(0)">Name ↓</th>
+        <th>Size</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="fileBody"></tbody>
   </table>
-
 </div>
 
 <script>
-function sortTable(colIndex) {
-    let table = document.getElementById("fileTable");
-    let body = table.tBodies[0];
-    let rows = Array.from(body.querySelectorAll("tr"));
-    let ascending = table.getAttribute("data-sort") !== "asc";
+// List all files and folders inside /files/ here
+const files = [
+  {name: "images", path: "files/images/", type: "folder", size: "-", date: "2025-12-04"},
+  {name: "example.txt", path: "files/example.txt", type: "file", size: "1 KB", date: "2025-12-04"}
+];
 
-    rows.sort((a, b) => {
-        let A = a.cells[colIndex].innerText.trim().toLowerCase();
-        let B = b.cells[colIndex].innerText.trim().toLowerCase();
-        let nA = parseFloat(A.replace(/[^0-9.\-]/g, ""));
-        let nB = parseFloat(B.replace(/[^0-9.\-]/g, ""));
-        if (!isNaN(nA) && !isNaN(nB)) {
-          return ascending ? nA - nB : nB - nA;
-        }
-        return ascending ? A.localeCompare(B) : B.localeCompare(A);
-    });
-
-    table.setAttribute("data-sort", ascending ? "asc" : "desc");
-    rows.forEach(r => body.appendChild(r));
-}
-
-document.getElementById("search").addEventListener("input", function() {
-    let term = this.value.toLowerCase();
-    let rows = document.querySelectorAll("#fileBody tr");
-    rows.forEach(r => {
-        let text = r.innerText.toLowerCase();
-        r.style.display = text.includes(term) ? "" : "none";
-    });
+const tbody = document.getElementById("fileBody");
+files.forEach(item => {
+  const tr = document.createElement("tr");
+  tr.innerHTML = `
+    <td><span class="icon">${item.type==="folder"?"📁":"📄"}</span> 
+        <a href="${item.path}" class="name-link">${item.name}</a></td>
+    <td>${item.size}</td>
+    <td>${item.date}</td>
+  `;
+  tbody.appendChild(tr);
 });
+
+// Search
+document.getElementById("search").addEventListener("input", function(){
+  const term = this.value.toLowerCase();
+  Array.from(tbody.querySelectorAll("tr")).forEach(r => {
+    r.style.display = r.innerText.toLowerCase().includes(term) ? "" : "none";
+  });
+});
+
+// Sorting
+function sortTable(colIndex){
+  const rows = Array.from(tbody.querySelectorAll("tr"));
+  const ascending = tbody.getAttribute("data-sort") !== "asc";
+  rows.sort((a,b)=>{
+    let A=a.cells[colIndex].innerText.toLowerCase();
+    let B=b.cells[colIndex].innerText.toLowerCase();
+    return ascending?A.localeCompare(B):B.localeCompare(A);
+  });
+  tbody.setAttribute("data-sort", ascending?"asc":"desc");
+  rows.forEach(r=>tbody.appendChild(r));
+}
 </script>
+</body>
+</html>
