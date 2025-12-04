@@ -20,7 +20,6 @@
 
 This section lists All The Languages Tools and Software I Used
 
-*
 - **Languages**:
     
 
@@ -30,11 +29,9 @@ This section lists All The Languages Tools and Software I Used
     
 <br>
 
-- **Softwares and Tools**:
+- **Tools Used**:
 
- [  ![Google Gemini](https://img.shields.io/badge/Gemini-white?logo=google-gemini&logoColor=blue)](https://img.shields.io/badge/---?style=flat-square&logo=ChatGPT&logoColor=gray&logoSize=gray&label=ChatGPT&labelColor=gray&color=gray
-)
-
+[Google Gemini](https://img.shields.io/badge/Gemini-white?logo=google-gemini&logoColor=blue)](https://img.shields.io/badge/---?style=flat-square&logo=ChatGPT&logoColor=gray&logoSize=gray&label=ChatGPT&labelColor=gray&color=gray)
 
 </p>
 
@@ -47,8 +44,6 @@ This section lists All The Languages Tools and Software I Used
 - [x] Made A Placeholder Homepage
 - [x] Create Readme.md
 - [ ] Upload files
-- [ ] Soon
-- [ ] Soon
 - [ ] Soon
 - [ ] Soon
 
