@@ -15,7 +15,7 @@
       </p>
   </div>
 
-  <div class="path">/files/</div>
+  <div class="path" id="path">/files/</div>
   <div class="search">
       <input type="text" id="search" placeholder="Type to search…">
   </div>
@@ -33,24 +33,47 @@
 </div>
 
 <script>
-// Manually list your files here
-const files = [
-  {name:"hello.txt", path:"files/hello.txt", type:"file", size:"1 KB", date:"2025-12-04"},
-  {name:"images", path:"images/", type:"folder", size:"-", date:"2025-12-04"}
-];
+// Define your files structure
+const fileTree = {
+  "/files/": [
+    {name:"images", path:"images/", type:"folder", size:"-", date:"2025-12-04"}
+  ],
+  "/files/images/": [
+    {name:"logo-mini.png", path:"images/logo-mini.png", type:"file", size:"2 KB", date:"2025-12-04"}
+  ]
+};
+
+let currentPath = "/files/";
 
 const tbody = document.getElementById('fileBody');
+const pathDiv = document.getElementById('path');
 
-files.forEach(item => {
-  const tr = document.createElement('tr');
-  tr.innerHTML = `
-    <td><span class="icon">${item.type==="folder"?"📁":"📄"}</span>
-        <a href="${item.path}" class="name-link">${item.name}</a></td>
-    <td>${item.size}</td>
-    <td>${item.date}</td>
-  `;
-  tbody.appendChild(tr);
-});
+function loadFiles(path){
+  tbody.innerHTML = "";
+  pathDiv.textContent = path;
+  const files = fileTree[path] || [];
+  files.forEach(item => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="icon">${item.type==="folder"?"📁":"📄"}</span>
+          <a href="#" class="name-link">${item.name}</a></td>
+      <td>${item.size}</td>
+      <td>${item.date}</td>
+    `;
+    // Click folder to navigate inside
+    if(item.type==="folder"){
+      tr.querySelector("a").addEventListener("click", e => {
+        e.preventDefault();
+        currentPath = path + item.name + "/";
+        loadFiles(currentPath);
+      });
+    }
+    tbody.appendChild(tr);
+  });
+}
+
+// Initial load
+loadFiles(currentPath);
 
 // Search functionality
 document.getElementById("search").addEventListener("input", function(){
